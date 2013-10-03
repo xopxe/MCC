@@ -42,7 +42,9 @@ void MccProtocol::send_message(int spid, uint8_t opcode, char *data, uint8_t dat
 	encoder.startList();
 	encoder.push(spid);
 	encoder.push(opcode);
-	encoder.push(data, data_length);
+	if (data!=NULL) {
+		encoder.push(data, data_length);
+	}
 	encoder.endList();
 }
 
@@ -89,6 +91,12 @@ void MccProtocol::process() {
 						//pc.putc('D');
 						data = decoder.asString(&data_length);
 						protocol_state = END;
+					} else if (token == EmBdecode::T_POP) {
+						if (tpid==0) {
+							if (opcode==16) { //ping, no params
+								send_message(0, 16, NULL, 0);
+							}
+						}
 					} else {
 						//TODO err
 					}
