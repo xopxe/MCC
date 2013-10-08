@@ -13,27 +13,36 @@
    limitations under the License.
 */
 #include <mbed.h>
-#include "EmBencode/EmBencode.h"
-#include "MccProtocol/mccprotocol.h"
-
+#include "mcc.h"
 
 Ticker flipper;
-DigitalOut led1(LED1);
+//DigitalOut led1(LED1);
 //DigitalOut led2(LED2);
-MccProtocol protocol;
 
+MCC mcc;
+
+#include "tasks/AdminTask.h"
+AdminTask admin_task;
+#include "tasks/TickerTask.h"
+TickerTask ticker_task;
+
+/*
 void flip() {
     led1 = !led1;
 }
+*/
 
 int main() 
 {
+
+
     //led2 = 1;
     //flipper.attach(&flip, 0.5); // the address of the function to be attached (flip) and the interval (2 seconds)
 
     // spin in a main loop. flipper will interrupt it to call flip
     while(1) {
-    	protocol.process();
+    	mcc.process_incomming();
+    	mcc.tick();
         //led1 = !led1;
         //wait(0.1);
     }

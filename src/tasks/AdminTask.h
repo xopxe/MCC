@@ -1,17 +1,17 @@
-#ifndef __task_ticker_h
-#define __task_ticker_h
+#ifndef __task_admin_h
+#define __task_admin_h
 
 #include "mcc.h"
 
 #define OPCODES 2
-#define OPCODE_TICKTOGGLE 1
+#define OPCODE_PING 1
 
-class TickerTask
+class AdminTask
 {
 	int pid;
 	OpcodeCallback opcode_callbacks[OPCODES];
   public:
-	TickerTask ();
+	AdminTask ();
 };
 
 
