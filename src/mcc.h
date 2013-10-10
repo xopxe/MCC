@@ -21,7 +21,10 @@ class MCC {
 	int n_poll_callbacks;
 
 	OpcodeCallbacks opcode_callbacks[MAX_PIDS];
+	uint8_t opcode_callbacks_count[MAX_PIDS]; //FIXME merge with previous as an array of structs.
 	int n_opcode_callbacks;
+
+    void process_incomming();
 
 public:
 	MCC();
@@ -31,7 +34,6 @@ public:
 
 	int register_opcode_callbacks(OpcodeCallback* opcode_callbacks, uint8_t opcodes_count);
 
-    void process_incomming();
     void send_message(int spid, uint8_t opcode, char *data, uint8_t data_length);
 
 	void tick();

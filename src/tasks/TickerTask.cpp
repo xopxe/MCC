@@ -46,7 +46,7 @@ TickerTask::TickerTask() {
 		TickerTask::opcode_callbacks[i]=NULL;
 	}
 	TickerTask::opcode_callbacks[OPCODE_TICKTOGGLE] = &handle_tickertoggle;
-	TickerTask::pid = mcc.register_opcode_callbacks(TickerTask::opcode_callbacks,16);
+	TickerTask::pid = mcc.register_opcode_callbacks(TickerTask::opcode_callbacks, OPCODES);
 
 	//mcc.register_poll_callback(tick2);
 }

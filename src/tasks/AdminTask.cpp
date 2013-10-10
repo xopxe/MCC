@@ -16,6 +16,6 @@ AdminTask::AdminTask() {
 		AdminTask::opcode_callbacks[i]=NULL;
 	}
 	AdminTask::opcode_callbacks[OPCODE_PING] = &handle_ping;
-	AdminTask::pid = mcc.register_opcode_callbacks(AdminTask::opcode_callbacks,16);
+	AdminTask::pid = mcc.register_opcode_callbacks(AdminTask::opcode_callbacks, OPCODES);
 }
 

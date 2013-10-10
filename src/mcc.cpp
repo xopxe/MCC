@@ -53,15 +53,16 @@ void MCC::unregister_poll_callback(int n) {
 }
 
 void MCC::tick() {
+	MCC::process_incomming();
 	for (int i=0; i<MCC::n_poll_callbacks; ++i){
 		MCC::poll_callbacks[i]();
 	}
-
 }
 
 int MCC::register_opcode_callbacks(OpcodeCallbacks opcode_callbacks, uint8_t opcodes_count) {
 	int pid = MCC::n_opcode_callbacks++;
 	MCC::opcode_callbacks[pid] = opcode_callbacks;
+	MCC::opcode_callbacks_count[pid] = opcodes_count;
 	return pid;
 }
 //void unregister_opcode_callbacks(int pid);
@@ -131,7 +132,9 @@ void MCC::process_incomming() {
 						data = decoder.asString(&data_length);
 						protocol_state = END;
 					} else if (token == EmBdecode::T_POP) { //no data section
-						if (tpid<MCC::n_opcode_callbacks) {
+						if (tpid<MAX_PIDS
+						&& tpid<MCC::n_opcode_callbacks
+						&& opcode<MCC::opcode_callbacks_count[tpid]) {
 							MCC::opcode_callbacks[tpid][opcode](tpid, opcode, NULL, 0);
 						}
 						protocol_state = MESSAGE;
@@ -147,7 +150,9 @@ void MCC::process_incomming() {
 					break;
 				case END:
 					if (token == EmBdecode::T_POP) {
-						if (tpid<MCC::n_opcode_callbacks) {
+						if (tpid<MAX_PIDS
+						&& tpid<MCC::n_opcode_callbacks
+						&& opcode<MCC::opcode_callbacks_count[tpid]) {
 							MCC::opcode_callbacks[tpid][opcode](tpid, opcode, data, data_length);
 						}
 						protocol_state = MESSAGE;

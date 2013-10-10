@@ -41,7 +41,6 @@ int main()
 
     // spin in a main loop. flipper will interrupt it to call flip
     while(1) {
-    	mcc.process_incomming();
     	mcc.tick();
         //led1 = !led1;
         //wait(0.1);
