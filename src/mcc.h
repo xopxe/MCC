@@ -11,7 +11,8 @@
 #define MAX_POLL_CALLBACKS 50
 #define MAX_PIDS 50
 
-//#define EVCODE_STARTED 2
+#define OPCODE_REPORT 0
+#define EVCODE_STARTED 2
 
 typedef void (*PollCallback) ();
 typedef void (*OpcodeCallback) (int pid, uint8_t opcode, char *data, uint8_t data_length);

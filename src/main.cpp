@@ -40,6 +40,7 @@ int main()
     //flipper.attach(&flip, 0.5); // the address of the function to be attached (flip) and the interval (2 seconds)
 
     // spin in a main loop. flipper will interrupt it to call flip
+	mcc.send_message(0, EVCODE_STARTED, NULL, 0);
     while(1) {
     	mcc.tick();
         //led1 = !led1;

@@ -23,6 +23,9 @@ void tick() {
 	mcc.send_message(1, OPCODE_TICKTOGGLE, NULL, 0);
 }
 
+static void handle_report(int pid, uint8_t opcode, char *data, uint8_t data_length) {
+	//TODO
+}
 void handle_tickertoggle(int pid, uint8_t opcode, char * data, uint8_t data_length) {
 	/*if (opcode==0) {
 	    flipper.attach(NULL, 1.0);
@@ -45,6 +48,7 @@ TickerTask::TickerTask() {
 	for (int i=0; i<TICKER_OPCODES; ++i) {
 		TickerTask::opcode_callbacks[i]=NULL;
 	}
+	TickerTask::opcode_callbacks[OPCODE_REPORT] = &handle_report;
 	TickerTask::opcode_callbacks[OPCODE_TICKTOGGLE] = &handle_tickertoggle;
 	TickerTask::pid = mcc.register_opcode_callbacks(TickerTask::opcode_callbacks, TICKER_OPCODES);
 
