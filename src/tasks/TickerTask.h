@@ -3,13 +3,13 @@
 
 #include "mcc.h"
 
-#define OPCODES 2
+#define TICKER_OPCODES 2
 #define OPCODE_TICKTOGGLE 1
 
 class TickerTask
 {
 	int pid;
-	OpcodeCallback opcode_callbacks[OPCODES];
+	OpcodeCallback opcode_callbacks[TICKER_OPCODES];
   public:
 	TickerTask ();
 };

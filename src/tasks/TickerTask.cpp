@@ -42,11 +42,11 @@ void handle_tickertoggle(int pid, uint8_t opcode, char * data, uint8_t data_leng
 
 TickerTask::TickerTask() {
     //flipper.attach(&tick, 1.0); // the address of the function to be attached (flip) and the interval (2 seconds)
-	for (int i=0; i<OPCODES; ++i) {
+	for (int i=0; i<TICKER_OPCODES; ++i) {
 		TickerTask::opcode_callbacks[i]=NULL;
 	}
 	TickerTask::opcode_callbacks[OPCODE_TICKTOGGLE] = &handle_tickertoggle;
-	TickerTask::pid = mcc.register_opcode_callbacks(TickerTask::opcode_callbacks, OPCODES);
+	TickerTask::pid = mcc.register_opcode_callbacks(TickerTask::opcode_callbacks, TICKER_OPCODES);
 
 	//mcc.register_poll_callback(tick2);
 }

@@ -35,6 +35,7 @@ MCC::MCC() {
 	n_poll_callbacks = 0;
 	n_opcode_callbacks = 0;
 	//pc.baud(9600);
+	//MCC::send_message(0, EVCODE_STARTED, data, data_length);
 }
 
 int MCC::register_poll_callback(PollCallback cb) {
@@ -61,8 +62,8 @@ void MCC::tick() {
 
 int MCC::register_opcode_callbacks(OpcodeCallbacks opcode_callbacks, uint8_t opcodes_count) {
 	int pid = MCC::n_opcode_callbacks++;
-	MCC::opcode_callbacks[pid] = opcode_callbacks;
-	MCC::opcode_callbacks_count[pid] = opcodes_count;
+	MCC::opcode_callbacks[pid].callbacks = opcode_callbacks;
+	MCC::opcode_callbacks[pid].n_callbacks = opcodes_count;
 	return pid;
 }
 //void unregister_opcode_callbacks(int pid);
@@ -132,10 +133,10 @@ void MCC::process_incomming() {
 						data = decoder.asString(&data_length);
 						protocol_state = END;
 					} else if (token == EmBdecode::T_POP) { //no data section
-						if (tpid<MAX_PIDS
-						&& tpid<MCC::n_opcode_callbacks
-						&& opcode<MCC::opcode_callbacks_count[tpid]) {
-							MCC::opcode_callbacks[tpid][opcode](tpid, opcode, NULL, 0);
+						if (tpid < MAX_PIDS
+						&& tpid < MCC::n_opcode_callbacks
+						&& opcode < (MCC::opcode_callbacks[tpid]).n_callbacks) {
+							MCC::opcode_callbacks[tpid].callbacks[opcode](tpid, opcode, NULL, 0);
 						}
 						protocol_state = MESSAGE;
 						/*if (tpid==0) {
@@ -150,10 +151,10 @@ void MCC::process_incomming() {
 					break;
 				case END:
 					if (token == EmBdecode::T_POP) {
-						if (tpid<MAX_PIDS
-						&& tpid<MCC::n_opcode_callbacks
-						&& opcode<MCC::opcode_callbacks_count[tpid]) {
-							MCC::opcode_callbacks[tpid][opcode](tpid, opcode, data, data_length);
+						if (tpid < MAX_PIDS
+						&& tpid < MCC::n_opcode_callbacks
+						&& opcode < (MCC::opcode_callbacks[tpid]).n_callbacks) {
+							MCC::opcode_callbacks[tpid].callbacks[opcode](tpid, opcode, data, data_length);
 						}
 						protocol_state = MESSAGE;
 						//pc.putc('E');

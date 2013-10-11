@@ -3,13 +3,15 @@
 
 #include "mcc.h"
 
-#define OPCODES 2
+#define ADMIN_OPCODES 3
 #define OPCODE_PING 1
+#define OPCODE_RESET 2
+
 
 class AdminTask
 {
 	int pid;
-	OpcodeCallback opcode_callbacks[OPCODES];
+	OpcodeCallback opcode_callbacks[ADMIN_OPCODES];
   public:
 	AdminTask ();
 };

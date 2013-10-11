@@ -11,17 +11,24 @@
 #define MAX_POLL_CALLBACKS 50
 #define MAX_PIDS 50
 
+//#define EVCODE_STARTED 2
+
 typedef void (*PollCallback) ();
 typedef void (*OpcodeCallback) (int pid, uint8_t opcode, char *data, uint8_t data_length);
 typedef OpcodeCallback* OpcodeCallbacks;
+struct OpcodesCallbackReg {
+	OpcodeCallbacks callbacks;
+	uint8_t n_callbacks;
+};
+typedef OpcodesCallbackReg OpcodesCalbbackReg;
 
 
 class MCC {
 	PollCallback poll_callbacks[MAX_POLL_CALLBACKS];
 	int n_poll_callbacks;
 
-	OpcodeCallbacks opcode_callbacks[MAX_PIDS];
-	uint8_t opcode_callbacks_count[MAX_PIDS]; //FIXME merge with previous as an array of structs.
+	OpcodesCallbackReg opcode_callbacks[MAX_PIDS];
+	//uint8_t opcode_callbacks_count[MAX_PIDS]; //FIXME merge with previous as an array of structs.
 	int n_opcode_callbacks;
 
     void process_incomming();
