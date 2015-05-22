@@ -1,12 +1,8 @@
-local MAX_MESSAGE_BUFFER = 2048
-
-
 package.path = package.path .. ";;;/semi/?.lua"
 local bencode = require 'bencode'
 
 local mcc = require 'mcc'
 local opcode_callbacks = mcc.opcode_callbacks
-local mcc_tick = mcc.tick
 
 local sub = string.sub
 
@@ -40,20 +36,16 @@ local function process_incomming_messages()
         
         --print ('A', tpid,opcode,data)
         
-        --mcc.send_message(tpid, opcode, data)
-        if tpid and opcode then
-          local cbs = opcode_callbacks[tpid] 
-          if cbs then 
-            local cb = cbs[opcode] 
-            if cb then cb(data) end
-          end
+        if tpid and opcode and opcode_callbacks[tpid] and opcode_callbacks[tpid][opcode] then 
+          opcode_callbacks[tpid][opcode](data)
+          --mcc.send_message(tpid, opcode, data)
         end
       
       end
       
       --elseif decoded == nil and nextpos == 'invalid type' then
       --  buffer=sub(buffer, 2)
-    elseif #buffer > MAX_MESSAGE_BUFFER then 
+    elseif #buffer > 2048 then 
       buffer=sub(buffer, 2)
       --print ('???', buffer, tostring(decoded))
     end
@@ -62,5 +54,5 @@ end
 
 while true do
   process_incomming_messages()
-  mcc_tick()
+  mcc.tick()
 end

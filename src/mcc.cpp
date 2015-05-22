@@ -11,13 +11,18 @@
 
 Serial pc(USBTX, USBRX);
 
+//int n_bytes = 0;
+//LocalFileSystem local("local");               // Create the local filesystem under the name "local"
+//FILE *fp = fopen("/local/out.txt", "w");  // Open "out.txt" on the local file system for writing
+
+
 enum ProtocolStates {
 	MESSAGE, TPID, OPCODE, DATA, END
 };
 
 enum ProtocolStates protocol_state = MESSAGE;
 
-char embuf[200];
+char embuf[255];
 EmBdecode decoder(embuf, sizeof embuf);
 EmBencode encoder;
 
@@ -27,14 +32,15 @@ char *data;
 uint8_t data_length;
 
 void EmBencode::PushChar(char ch) {
-	//Serial.write(ch);
+	////////Serial.write(ch);
+	while (pc.writeable()==0) {}
 	pc.putc(ch);
 }
 
 MCC::MCC() {
 	n_poll_callbacks = 0;
 	n_opcode_callbacks = 0;
-	//pc.baud(9600);
+
 	//MCC::send_message(0, EVCODE_STARTED, data, data_length);
 }
 
@@ -83,13 +89,21 @@ void MCC::send_message(int spid, uint8_t opcode, char *data, uint8_t data_length
 	if (data!=NULL) {
 		encoder.push(data, data_length);
 	}
+	//encoder.push(n_bytes);
 	encoder.endList();
 }
+
 
 void MCC::process_incomming() {
 	if (pc.readable()) {
 		char ch = pc.getc();
-		pc.putc(ch);
+		//pc.putc(ch);
+		//n_bytes++;
+	    //fprintf(fp, "%c", ch);
+	    //if (n_bytes==14000) {fclose(fp);}
+
+		//if (n_bytes%100==0) {pc.printf('%d', n_bytes);}
+		//pc.putc(ch);
 		uint8_t bytes = decoder.process(ch);
 		if (bytes > 0) {
 			for (;;) {
@@ -138,7 +152,7 @@ void MCC::process_incomming() {
 						&& opcode < (MCC::opcode_callbacks[tpid]).n_callbacks) {
 							MCC::opcode_callbacks[tpid].callbacks[opcode](tpid, opcode, NULL, 0);
 						}
-						protocol_state = MESSAGE;
+						protocol_state = END;
 						/*if (tpid==0) {
 							if (opcode==16) { //ping, no params
 								send_message(0, 16, NULL, 0);
@@ -146,7 +160,7 @@ void MCC::process_incomming() {
 						}*/
 					} else {
 						//pc.putc('D');
-						protocol_state = MESSAGE;
+						protocol_state = END;
 					}
 					break;
 				case END:
@@ -154,6 +168,7 @@ void MCC::process_incomming() {
 						if (tpid < MAX_PIDS
 						&& tpid < MCC::n_opcode_callbacks
 						&& opcode < (MCC::opcode_callbacks[tpid]).n_callbacks) {
+							pc.putc('_');
 							MCC::opcode_callbacks[tpid].callbacks[opcode](tpid, opcode, data, data_length);
 						}
 						protocol_state = MESSAGE;

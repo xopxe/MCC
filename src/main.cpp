@@ -35,6 +35,9 @@ void flip() {
 int main() 
 {
 
+    //Serial s(USBTX, USBRX);
+    //s.baud(115200);
+    //s.baud(921600);
 
     //led2 = 1;
     //flipper.attach(&flip, 0.5); // the address of the function to be attached (flip) and the interval (2 seconds)

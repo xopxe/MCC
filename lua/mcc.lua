@@ -1,13 +1,14 @@
 local bencode = require  'bencode'
 local encode = bencode.encode
 
+local uwrite = uart.write
 
 
 -- SENDING
 ----------------------------------------------------
 local function send_message (spid, opcode, data)
   local s, err = encode({spid, opcode, data})
-  print (s)
+  uwrite (0, s)
 end
 ----------------------------------------------------
 
